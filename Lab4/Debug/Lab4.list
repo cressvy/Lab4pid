@@ -27,23 +27,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  00020018  2**0
                   CONTENTS, READONLY
- 12 .debug_info   0000cd1c  00000000  00000000  00020048  2**0
+ 12 .debug_info   0000cd15  00000000  00000000  00020048  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 00001900  00000000  00000000  0002cd64  2**0
+ 13 .debug_abbrev 00001900  00000000  00000000  0002cd5d  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 00000b88  00000000  00000000  0002e668  2**3
+ 14 .debug_aranges 00000b88  00000000  00000000  0002e660  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_ranges 00000b00  00000000  00000000  0002f1f0  2**3
+ 15 .debug_ranges 00000b00  00000000  00000000  0002f1e8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  00015e98  00000000  00000000  0002fcf0  2**0
+ 16 .debug_macro  00015e98  00000000  00000000  0002fce8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   0000c823  00000000  00000000  00045b88  2**0
+ 17 .debug_line   0000c82b  00000000  00000000  00045b80  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    0008d41a  00000000  00000000  000523ab  2**0
+ 18 .debug_str    0008d422  00000000  00000000  000523ab  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000050  00000000  00000000  000df7c5  2**0
+ 19 .comment      00000050  00000000  00000000  000df7cd  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00003200  00000000  00000000  000df818  2**2
+ 20 .debug_frame  00003200  00000000  00000000  000df820  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1134,16 +1134,10 @@ HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
  8000dba:	4603      	mov	r3, r0
  8000dbc:	4a56      	ldr	r2, [pc, #344]	; (8000f18 <main+0x200>)
  8000dbe:	6013      	str	r3, [r2, #0]
-
-//		  float CurrentTime = micros();
-//		  float Delta_T = ( CurrentTime - PastTime ) / 1.0e6 ;  // PastTime = previous time
-//		  PastTime = CurrentTime;
 		  float Delta_T = 0.01;
  8000dc0:	4b56      	ldr	r3, [pc, #344]	; (8000f1c <main+0x204>)
  8000dc2:	60bb      	str	r3, [r7, #8]
-
-		  // e(t), Error
-		  e = setpoint - degree ;
+		  e = setpoint - degree ;//error
  8000dc4:	4b56      	ldr	r3, [pc, #344]	; (8000f20 <main+0x208>)
  8000dc6:	681b      	ldr	r3, [r3, #0]
  8000dc8:	ee07 3a90 	vmov	s15, r3
@@ -1155,9 +1149,7 @@ HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
  8000dde:	ee17 2a90 	vmov	r2, s15
  8000de2:	4b50      	ldr	r3, [pc, #320]	; (8000f24 <main+0x20c>)
  8000de4:	601a      	str	r2, [r3, #0]
-
-		  // derivative
-		  float de_By_dt = (e - e_past) / Delta_T ;
+		  float de_By_dt = (e - e_past) / Delta_T ;//dift
  8000de6:	4b4f      	ldr	r3, [pc, #316]	; (8000f24 <main+0x20c>)
  8000de8:	681a      	ldr	r2, [r3, #0]
  8000dea:	4b4f      	ldr	r3, [pc, #316]	; (8000f28 <main+0x210>)
@@ -1168,9 +1160,7 @@ HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
  8000df8:	ed97 7a02 	vldr	s14, [r7, #8]
  8000dfc:	eec6 7a87 	vdiv.f32	s15, s13, s14
  8000e00:	edc7 7a01 	vstr	s15, [r7, #4]
-
-		  // integral
-		  float e_integral = e_integral + (e * Delta_T);
+		  float e_integral = e_integral + (e * Delta_T);//intg
  8000e04:	4b47      	ldr	r3, [pc, #284]	; (8000f24 <main+0x20c>)
  8000e06:	681b      	ldr	r3, [r3, #0]
  8000e08:	ee07 3a90 	vmov	s15, r3
@@ -1180,9 +1170,8 @@ HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
  8000e18:	ed97 7a03 	vldr	s14, [r7, #12]
  8000e1c:	ee77 7a27 	vadd.f32	s15, s14, s15
  8000e20:	edc7 7a03 	vstr	s15, [r7, #12]
-
-		  // control signal
-		  u = (K_p * e) + (K_i * e_integral) + (K_d * de_By_dt) ;
+		  //pid calculate
+		  u = (Kp * e) + (Ki * e_integral) + (Kd * de_By_dt) ;
  8000e24:	4b3f      	ldr	r3, [pc, #252]	; (8000f24 <main+0x20c>)
  8000e26:	681b      	ldr	r3, [r3, #0]
  8000e28:	ee07 3a90 	vmov	s15, r3
@@ -1202,52 +1191,40 @@ HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
  8000e5a:	ee77 7a27 	vadd.f32	s15, s14, s15
  8000e5e:	4b36      	ldr	r3, [pc, #216]	; (8000f38 <main+0x220>)
  8000e60:	edc3 7a00 	vstr	s15, [r3]
-
-		  // PWM
 		  PWM = fabs(u);
  8000e64:	4b34      	ldr	r3, [pc, #208]	; (8000f38 <main+0x220>)
  8000e66:	edd3 7a00 	vldr	s15, [r3]
  8000e6a:	eef0 7ae7 	vabs.f32	s15, s15
  8000e6e:	4b33      	ldr	r3, [pc, #204]	; (8000f3c <main+0x224>)
  8000e70:	edc3 7a00 	vstr	s15, [r3]
-		  if (PWM > 100)
+		  if (PWM > 100){PWM = 100;}
  8000e74:	4b31      	ldr	r3, [pc, #196]	; (8000f3c <main+0x224>)
  8000e76:	edd3 7a00 	vldr	s15, [r3]
  8000e7a:	ed9f 7a31 	vldr	s14, [pc, #196]	; 8000f40 <main+0x228>
  8000e7e:	eef4 7ac7 	vcmpe.f32	s15, s14
  8000e82:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
  8000e86:	dd02      	ble.n	8000e8e <main+0x176>
-		  {
-			  PWM = 100;
  8000e88:	4b2c      	ldr	r3, [pc, #176]	; (8000f3c <main+0x224>)
  8000e8a:	4a2e      	ldr	r2, [pc, #184]	; (8000f44 <main+0x22c>)
  8000e8c:	601a      	str	r2, [r3, #0]
-		  }
-
-		  // Motor Direction
 		  Direction = 1;
  8000e8e:	4b2e      	ldr	r3, [pc, #184]	; (8000f48 <main+0x230>)
  8000e90:	2201      	movs	r2, #1
  8000e92:	701a      	strb	r2, [r3, #0]
-		  if (u < 0)
+		  if (u < 0){Direction = -1;}
  8000e94:	4b28      	ldr	r3, [pc, #160]	; (8000f38 <main+0x220>)
  8000e96:	edd3 7a00 	vldr	s15, [r3]
  8000e9a:	eef5 7ac0 	vcmpe.f32	s15, #0.0
  8000e9e:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
  8000ea2:	d502      	bpl.n	8000eaa <main+0x192>
-		  {
-			  Direction = -1;
  8000ea4:	4b28      	ldr	r3, [pc, #160]	; (8000f48 <main+0x230>)
  8000ea6:	22ff      	movs	r2, #255	; 0xff
  8000ea8:	701a      	strb	r2, [r3, #0]
-		  }
-
-		  if (Direction == -1)
+		  if (Direction == -1){
  8000eaa:	4b27      	ldr	r3, [pc, #156]	; (8000f48 <main+0x230>)
  8000eac:	f993 3000 	ldrsb.w	r3, [r3]
  8000eb0:	f1b3 3fff 	cmp.w	r3, #4294967295
  8000eb4:	d10e      	bne.n	8000ed4 <main+0x1bc>
-		  {
 			  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, PWM); //PA8
  8000eb6:	4b21      	ldr	r3, [pc, #132]	; (8000f3c <main+0x224>)
  8000eb8:	edd3 7a00 	vldr	s15, [r3]
@@ -1263,13 +1240,11 @@ HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
  8000ed0:	639a      	str	r2, [r3, #56]	; 0x38
  8000ed2:	e012      	b.n	8000efa <main+0x1e2>
 		  }
-
-		  else if (Direction == 1)
+		  else if (Direction == 1){
  8000ed4:	4b1c      	ldr	r3, [pc, #112]	; (8000f48 <main+0x230>)
  8000ed6:	f993 3000 	ldrsb.w	r3, [r3]
  8000eda:	2b01      	cmp	r3, #1
  8000edc:	d10d      	bne.n	8000efa <main+0x1e2>
-		  {
 			  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0); //PA8
  8000ede:	4b0a      	ldr	r3, [pc, #40]	; (8000f08 <main+0x1f0>)
  8000ee0:	681b      	ldr	r3, [r3, #0]
@@ -1284,9 +1259,6 @@ HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
  8000ef4:	ee17 2a90 	vmov	r2, s15
  8000ef8:	639a      	str	r2, [r3, #56]	; 0x38
 		  }
-
-
-
 	  }
 	  e_past = e;
  8000efa:	4b0a      	ldr	r3, [pc, #40]	; (8000f24 <main+0x20c>)
@@ -1300,14 +1272,14 @@ HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
  8000f0c:	20000170 	.word	0x20000170
  8000f10:	20000150 	.word	0x20000150
  8000f14:	4112c000 	.word	0x4112c000
- 8000f18:	20000154 	.word	0x20000154
+ 8000f18:	20000160 	.word	0x20000160
  8000f1c:	3c23d70a 	.word	0x3c23d70a
- 8000f20:	2000015c 	.word	0x2000015c
- 8000f24:	20000164 	.word	0x20000164
- 8000f28:	20000160 	.word	0x20000160
+ 8000f20:	20000154 	.word	0x20000154
+ 8000f24:	2000015c 	.word	0x2000015c
+ 8000f28:	20000158 	.word	0x20000158
  8000f2c:	20000004 	.word	0x20000004
  8000f30:	20000008 	.word	0x20000008
- 8000f34:	20000158 	.word	0x20000158
+ 8000f34:	20000164 	.word	0x20000164
  8000f38:	20000168 	.word	0x20000168
  8000f3c:	2000016c 	.word	0x2000016c
  8000f40:	42c80000 	.word	0x42c80000

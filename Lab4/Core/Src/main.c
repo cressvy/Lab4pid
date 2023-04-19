@@ -148,13 +148,13 @@ HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
 		  if (PWM > 100){PWM = 100;}
 		  Direction = 1;
 		  if (u < 0){Direction = -1;}
-		  if (Direction == -1){
-			  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, PWM); //PA8
-			  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 0); //PA9
+		  if (Direction == 1){
+			  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, PWM);
+			  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);
 		  }
-		  else if (Direction == 1){
-			  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0); //PA8
-			  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, PWM); //PA9
+		  else if (Direction == -1){
+			  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, 0);
+			  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, PWM);
 		  }
 	  }
 	  e_past = e;
